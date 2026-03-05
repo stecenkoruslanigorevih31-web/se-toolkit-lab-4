@@ -1,11 +1,17 @@
 """AI-generated unit tests for interactions module (curated)."""
 
-from backend.app.routers.interactions import filter_by_max_item_id
-from backend.app.models.interaction import InteractionLog
+# Простой импорт через sys.path (если другие не работают)
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+
+from app.routers.interactions import filter_by_max_item_id
+from app.models.interaction import InteractionLog
 from datetime import datetime
 
+
 def _make_log(id: int, learner_id: int, item_id: int) -> InteractionLog:
-    """Helper to create test interaction logs."""
+    """Helper function to create test interaction logs."""
     return InteractionLog(
         kind="view",
         id=id,
@@ -14,10 +20,12 @@ def _make_log(id: int, learner_id: int, item_id: int) -> InteractionLog:
         created_at=datetime(2025, 1, 1)
     )
 
-# KEPT: covers the empty-list edge case, not tested elsewhere
+
+# KEPT: covers the empty-list edge case
 def test_filter_returns_empty_list_when_no_interactions() -> None:
     result = filter_by_max_item_id(interactions=[], max_item_id=5)
     assert len(result) == 0
+
 
 # KEPT: tests negative max_item_id boundary
 def test_filter_with_negative_max_item_id() -> None:
@@ -25,7 +33,8 @@ def test_filter_with_negative_max_item_id() -> None:
     result = filter_by_max_item_id(interactions=interactions, max_item_id=-1)
     assert len(result) == 0
 
-# DISCARDED: duplicates test_filter_includes_interaction_at_boundary
+
+# DISCARDED: duplicates existing test
 # def test_filter_boundary_duplicate() -> None:
 #     interactions = [_make_log(1, 1, 2)]
 #     result = filter_by_max_item_id(interactions=interactions, max_item_id=2)
